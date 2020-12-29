@@ -66,40 +66,30 @@ public class PrimaryController {
         signatureArea.setText(rsa.podpisujSlepo(plaintextArea.getText()).toString(16).toUpperCase());
     }
 
-    public void verifyFromStrings(String text, String signature) {
-        if (rsa.weryfikujStringSlepo(text, signature)) {
-            Alert alert = new Alert(Alert.AlertType.NONE, "Verification succesful!", ButtonType.OK);
-            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            alert.setTitle("Success");
-            alert.setResizable(false);
-            stage.getIcons().add(new Image(getClass().getResource("iconsuccess.png").toExternalForm()));
-            alert.showAndWait();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.NONE, "Verification unsuccesful!", ButtonType.OK);
-            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            alert.setTitle("Failure");
-            alert.setResizable(false);
-            stage.getIcons().add(new Image(getClass().getResource("iconfail.png").toExternalForm()));
-            alert.showAndWait();
-        }
+    private void successDialog() {
+        Alert alert = new Alert(Alert.AlertType.NONE, "Verification succesful!", ButtonType.OK);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alert.setTitle("Success");
+        alert.setResizable(false);
+        stage.getIcons().add(new Image(getClass().getResource("iconsuccess.png").toExternalForm()));
+        alert.showAndWait();
+    }
+
+    private void failureDialog() {
+        Alert alert = new Alert(Alert.AlertType.NONE, "Verification unsuccesful!", ButtonType.OK);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alert.setTitle("Failure");
+        alert.setResizable(false);
+        stage.getIcons().add(new Image(getClass().getResource("iconfail.png").toExternalForm()));
+        alert.showAndWait();
     }
 
     public void verifyTextAreas() {
         loadFromFields();
         if (rsa.weryfikujStringSlepo(plaintextArea.getText(), signatureArea.getText())) {
-            Alert alert = new Alert(Alert.AlertType.NONE, "Verification succesful!", ButtonType.OK);
-            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            alert.setTitle("Success");
-            alert.setResizable(false);
-            stage.getIcons().add(new Image(getClass().getResource("iconsuccess.png").toExternalForm()));
-            alert.showAndWait();
+            successDialog();
         } else {
-            Alert alert = new Alert(Alert.AlertType.NONE, "Verification unsuccesful!", ButtonType.OK);
-            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            alert.setTitle("Failure");
-            alert.setResizable(false);
-            stage.getIcons().add(new Image(getClass().getResource("iconfail.png").toExternalForm()));
-            alert.showAndWait();
+            failureDialog();
         }
     }
 
@@ -138,7 +128,11 @@ public class PrimaryController {
         try {
             String input = new String(Files.readAllBytes(Paths.get(inputPathText.getText()))).trim();
             String signature = new String(Files.readAllBytes(Paths.get(outputPathText.getText()))).trim();
-            verifyFromStrings(input, signature);
+            if (rsa.weryfikujBigIntSlepo((Files.readAllBytes(Paths.get(inputPathText.getText()))), new BigInteger(signature, 16))) {
+                successDialog();
+            } else {
+                failureDialog();
+            }
         } catch (IOException e) {
             popupError("No or invalid file chosen.");
         }

@@ -1,0 +1,7 @@
+.root {
+    -fx-padding: 15;
+    /*-fx-background-color: #f59eff;*/
+    -fx-background-image:url('faworytkasmol.jpg');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right center;
+}

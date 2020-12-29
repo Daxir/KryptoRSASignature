@@ -6,13 +6,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class PrimaryController {
     public Pane background;
@@ -63,7 +61,7 @@ public class PrimaryController {
 
     public void signPlaintextArea() {
         loadFromFields();
-        signatureArea.setText(rsa.podpisujSlepo(plaintextArea.getText()).toString(16).toUpperCase());
+        signatureArea.setText(rsa.blindSignature(plaintextArea.getText().getBytes()).toString(16).toUpperCase());
     }
 
     private void successDialog() {
@@ -86,7 +84,7 @@ public class PrimaryController {
 
     public void verifyTextAreas() {
         loadFromFields();
-        if (rsa.weryfikujStringSlepo(plaintextArea.getText(), signatureArea.getText())) {
+        if (rsa.blindVerify(plaintextArea.getText().getBytes(), new BigInteger(signatureArea.getText(), 16))) {
             successDialog();
         } else {
             failureDialog();
@@ -116,7 +114,7 @@ public class PrimaryController {
         loadFromFields();
         try {
             FileWriter fileWriter = new FileWriter(outputPathText.getText());
-            fileWriter.write(rsa.podpisujSlepo(Files.readAllBytes(Paths.get(inputPathText.getText()))).toString(16).toUpperCase());
+            fileWriter.write(rsa.blindSignature(Files.readAllBytes(Paths.get(inputPathText.getText()))).toString(16).toUpperCase());
             fileWriter.close();
         } catch (IOException e) {
             popupError("No or invalid file chosen.");
@@ -126,9 +124,8 @@ public class PrimaryController {
     public void verifyFiles() {
         loadFromFields();
         try {
-            String input = new String(Files.readAllBytes(Paths.get(inputPathText.getText()))).trim();
             String signature = new String(Files.readAllBytes(Paths.get(outputPathText.getText()))).trim();
-            if (rsa.weryfikujBigIntSlepo((Files.readAllBytes(Paths.get(inputPathText.getText()))), new BigInteger(signature, 16))) {
+            if (rsa.blindVerify((Files.readAllBytes(Paths.get(inputPathText.getText()))), new BigInteger(signature, 16))) {
                 successDialog();
             } else {
                 failureDialog();

@@ -55,48 +55,24 @@ public class RSA {
         km1=k.modInverse(N);
     }
 
-
-    public BigInteger podpisujSlepo(byte[] tekst)
+    public BigInteger blindSignature(byte[] plainText)
     {
-        digest.update(tekst);
-        BigInteger podpis=new BigInteger(1, digest.digest());
-        podpis = podpis.multiply(k.modPow(e,N)).mod(N);
-        podpis=podpis.modPow(d, N);S=podpis;
-        podpis=podpis.multiply(km1).mod(N);
-        return podpis;
+        digest.update(plainText);
+        BigInteger sig=new BigInteger(1, digest.digest());
+        sig = sig.multiply(k.modPow(e,N)).mod(N);
+        sig=sig.modPow(d, N);
+        S=sig;
+        sig=sig.multiply(km1).mod(N);
+        return sig;
     }
 
-    public BigInteger podpisujSlepo(String tekst)
+    public boolean blindVerify(byte[] plainText, BigInteger signature)
     {
-        digest.update(tekst.getBytes());
-        BigInteger podpis=new BigInteger(1, digest.digest());
-        podpis = podpis.multiply(k.modPow(e,N)).mod(N);
-        podpis=podpis.modPow(d, N);S=podpis;
-        podpis=podpis.multiply(km1).mod(N);
-        return podpis;
-    }
-
-
-    public boolean weryfikujBigIntSlepo(byte[] tekstJawny, BigInteger podpis)
-    {
-        digest.update(tekstJawny);
-        BigInteger pom=new BigInteger(1, digest.digest());
-        pom = pom.multiply(k.modPow(e,N)).mod(N);
-        pom=pom.modPow(d, N);//S=podpis;
-        pom=pom.multiply(km1).mod(N);
-        return podpis.compareTo(pom) == 0;
-    }
-
-
-    //zakładamy, że podpis jest w postaci hexadecymalnych znaków
-    public boolean weryfikujStringSlepo(String tekstJawny, String podpis)
-    {
-        digest.update(tekstJawny.getBytes());
-        BigInteger pom=new BigInteger(1, digest.digest());
-        pom = pom.multiply(k.modPow(e,N)).mod(N);
-        pom=pom.modPow(d, N);//S=podpis;
-        pom=pom.multiply(km1).mod(N);
-        BigInteger bi=new BigInteger(1, hexToBytes(podpis));
-        return bi.compareTo(pom) == 0;
+        digest.update(plainText);
+        BigInteger tmp=new BigInteger(1, digest.digest());
+        tmp = tmp.multiply(k.modPow(e,N)).mod(N);
+        tmp=tmp.modPow(d, N);
+        tmp=tmp.multiply(km1).mod(N);
+        return signature.compareTo(tmp) == 0;
     }
 }

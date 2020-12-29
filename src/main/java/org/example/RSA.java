@@ -18,26 +18,6 @@ public class RSA {
         }
     }
 
-    public static byte[] hexToBytes(String tekst) {
-        if (tekst == null) {
-            return null;
-        } else if (tekst.length() < 2) {
-            return null;
-        } else {
-            if (tekst.length() % 2 != 0) tekst += '0';
-            int dl = tekst.length() / 2;
-            byte[] wynik = new byte[dl];
-            for (int i = 0; i < dl; i++) {
-                try {
-                    wynik[i] = (byte) Integer.parseInt(tekst.substring(i * 2, i * 2 + 2), 16);
-                } catch (NumberFormatException e) {
-                    System.out.println("debil");
-                }
-            }
-            return wynik;
-        }
-    }
-
     public void generateKey() {
         p = BigInteger.probablePrime(keyLen, new Random());
         q = BigInteger.probablePrime(keyLen, new Random());

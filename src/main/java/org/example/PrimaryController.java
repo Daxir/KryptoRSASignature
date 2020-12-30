@@ -27,6 +27,7 @@ public class PrimaryController {
     public Button inputFileButton;
     public Button outputFileButton;
     public TextField outputPathText;
+    public Button secretButton;
 
     public void generate() {
         rsa.generateKey();
@@ -112,10 +113,8 @@ public class PrimaryController {
 
     public void signFile() {
         loadFromFields();
-        try {
-            FileWriter fileWriter = new FileWriter(outputPathText.getText());
+        try (FileWriter fileWriter = new FileWriter(outputPathText.getText())) {
             fileWriter.write(rsa.blindSignature(Files.readAllBytes(Paths.get(inputPathText.getText()))).toString(16).toUpperCase());
-            fileWriter.close();
         } catch (IOException e) {
             popupError("No or invalid file chosen.");
         }
@@ -135,6 +134,15 @@ public class PrimaryController {
         }
     }
 
+    public void secretFunction() {
+        String message = "Autorzy:\nMonika Dyczka,\nMichał Malarski,\nMateusz Roszkowski";
+        Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.OK);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alert.setTitle("Fancy, woo!");
+        alert.setResizable(false);
+        stage.getIcons().add(new Image(getClass().getResource("iconsecret.png").toExternalForm()));
+        alert.showAndWait();
+    }
 
 
 }

@@ -31,5 +31,6 @@
       <Text layoutX="639.0" layoutY="501.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output File:" underline="true" />
       <Button layoutX="500.0" layoutY="505.0" mnemonicParsing="false" onAction="#signFile" prefHeight="25.0" prefWidth="58.0" text="Sign &gt;" />
       <Button layoutX="436.0" layoutY="505.0" mnemonicParsing="false" onAction="#verifyFiles" text="&lt; Verify" />
+      <Button fx:id="secretButton" layoutX="934.0" layoutY="16.0" mnemonicParsing="false" onAction="#secretFunction" opacity="0.0" prefHeight="50.0" prefWidth="50.0" textFill="TRANSPARENT" />
    </children>
 </Pane>
